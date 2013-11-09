@@ -15,12 +15,39 @@ class Patient:
         self.emergency = emergency
         self.email = email
         self.phone = phone
+        self.records = []
+    
+    def create_patient():
+        patient = [
+                   {
+                    'first_name': self.first_name,
+                    'last_name': self.last_name,
+                    'stu_id': self.stu_id,
+                    'emergency': self.emergency,
+                    'email': self.email,
+                    'phone': self.phone,
+                    'records': []
+                   }
+                  ]
+        return patient
 
-
-class Entry:
+class Record:
     def __init__(self, datetime, sport, injury, treatment, follow_up):
         self.datetime = datetime
         self.sport = sport
         self.injury = injury
         self.treatment = treatment
         self.follow_up = follow_up
+        
+    def create_record():
+            record = [
+                       {
+                        'datetime': self.datetime,
+                        'sport': self.sport,
+                        'stu_id': self.stu_id,
+                        'injury': self.injury,
+                        'treatment': self.treatment,
+                        'follow_up': self.follow_up,
+                       }
+                      ]
+            return record

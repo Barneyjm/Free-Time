@@ -1,4 +1,4 @@
-C:\Python27\python "form.py"
+C:\Python27\python "controller.py"
 
 pause
 del "%0"
