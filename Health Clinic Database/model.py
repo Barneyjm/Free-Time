@@ -8,28 +8,32 @@
 #
 
 class Patient:
-    def __init__(self, first_name, last_name, stu_id, emergency=None, email=None, phone=None):
+    def __init__(self, first_name, last_name, stu_id, email=None, phone=None, emergency=None, emergency_phone=None):
         self.first_name = first_name
         self.last_name = last_name
         self.stu_id = stu_id
         self.emergency = emergency
+        self.emergency_phone = emergency_phone
         self.email = email
         self.phone = phone
         self.records = []
     
     def create_patient():
-        patient = [
+        self.patient = [
                    {
                     'first_name': self.first_name,
                     'last_name': self.last_name,
                     'stu_id': self.stu_id,
-                    'emergency': self.emergency,
                     'email': self.email,
                     'phone': self.phone,
+                    'emergency': self.emergency,
+                    'emergency_phone': self.emergency_phone,
                     'records': []
                    }
                   ]
-        return patient
+        
+    def keys(self):
+        return self.patient.keys()
 
 class Record:
     def __init__(self, datetime, sport, injury, treatment, follow_up):

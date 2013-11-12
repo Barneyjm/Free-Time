@@ -16,7 +16,8 @@ healthDB = client['health_database']
 patients = healthDB['patient_collection']
 
 def new_patient(patient):
-    patients.insert(patient)
+    print patient.stu_id
+    #~ patients.insert(patient)
 
 def get_patient(patient_ID):
     return patients.find_one(patient_ID)

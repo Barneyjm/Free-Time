@@ -4,6 +4,8 @@ import tkFileDialog
 import time, os
 from model import Patient, Record
 from controller import *
+from controller import patients
+import controller
 
 #
 # Health Clinic Database -- creates and stores personal health records 
@@ -61,9 +63,10 @@ def create_widgets_in_ID_frame():
     ID_frame_next_button = Button(ID_frame, text = "Submit", command = lambda: new_record(student_id_entry.get()) )
     ID_frame_next_button.grid(column=1, row=2, pady=10)
 
-def create_widgets_in_patient_frame():
+def create_widgets_in_patient_frame(patient):
     # Create the label for the frame
-    patient_ID = "107566575"
+    patient_ID = patient.stu_id
+    #patient_ID = "107566575"
     patient_frame_label = Label(patient_frame, text='Patient ' + str(patient_ID))
     patient_frame_label.grid(column=0, row=0, pady=10, padx=10, columnspan = 2)
 
@@ -127,7 +130,7 @@ def create_widgets_in_new_patient_frame():
     # Create the button for the frame
     new_patient_back_button = Button(new_patient_frame, text = "Back", command = call_ID_frame_on_top)
     new_patient_back_button.grid(column=0, row=8, pady=10)
-    new_patient_next_button = Button(new_patient_frame, text = "Create...", command = lambda: call_patient_frame_on_top)
+    new_patient_next_button = Button(new_patient_frame, text = "Create...", command = lambda: create_patient(first_name_text.get(),last_name_text.get(),stu_id_text.get(),email_text.get(),student_phone_text.get(),emergency_text.get(),emergency_phone_text.get()))
     new_patient_next_button.grid(column=1, row=8, pady=10)
 
 ####################    Create Frames    ####################
@@ -188,6 +191,11 @@ def new_record(patient_ID):
     except:
         call_new_patient_frame_on_top()
         
+def create_patient(first_name, last_name, stu_id, email, phone, emergency, emergency_phone):
+    patient = Patient(first_name, last_name, stu_id, email, phone, emergency, emergency_phone)
+    controller.new_patient(patient)
+    create_widgets_in_patient_frame(patient)
+        
 
 ##################    Main Program    #########################
 
@@ -230,7 +238,7 @@ new_patient_frame['relief'] = 'sunken'
 new_patient_frame.grid(column=0, row=0, padx=20, pady=5)
 
 # Create all widgets in all frames
-create_widgets_in_patient_frame()
+#create_widgets_in_patient_frame()
 create_widgets_in_login_frame()
 create_widgets_in_initial_frame()
 create_widgets_in_new_entry_frame()
