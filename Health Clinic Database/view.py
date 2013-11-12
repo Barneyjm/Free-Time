@@ -147,11 +147,11 @@ def call_login_frame_on_top():
     forget_frames(login_frame)
     login_frame.grid(column=0, row=0, padx=20, pady=5)
 
-def call_patient_frame_on_top():
+def call_patient_frame_on_top(patient):
     # This function can only be called from the second window.
     # Hide the second window and show the third window.
     forget_frames(patient_frame)
-    create_widgets_in_patient_frame()
+    create_widgets_in_patient_frame(patient)
     patient_frame.grid(column=0, row=0, padx=20, pady=5)
     
 def call_new_entry_frame_on_top():
@@ -194,7 +194,8 @@ def new_record(patient_ID):
 def create_patient(first_name, last_name, stu_id, email, phone, emergency, emergency_phone):
     patient = Patient(first_name, last_name, stu_id, email, phone, emergency, emergency_phone)
     controller.new_patient(patient)
-    create_widgets_in_patient_frame(patient)
+    #create_widgets_in_patient_frame(patient)
+    call_patient_frame_on_top(patient)
         
 
 ##################    Main Program    #########################
