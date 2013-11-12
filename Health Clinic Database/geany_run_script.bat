@@ -1,4 +1,4 @@
-C:\Python27\python "controller.py"
+C:\Python27\python "view.py"
 
 pause
 del "%0"

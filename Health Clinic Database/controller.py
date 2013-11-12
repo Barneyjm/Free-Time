@@ -1,4 +1,5 @@
 import pymongo
+import subprocess
 from pymongo import MongoClient
 
 # Controls dataflow to and from the health clinic database.
