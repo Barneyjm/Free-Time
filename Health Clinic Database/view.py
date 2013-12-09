@@ -4,7 +4,7 @@ import tkFileDialog
 import time, os
 from model import Patient, Record
 from controller import *
-from controller import patients
+from controller import healthDB
 import controller
 
 #
@@ -60,32 +60,64 @@ def create_widgets_in_ID_frame():
     # Create the button for the frame
     ID_frame_back_button = Button(ID_frame, text = "Back", command = call_initial_frame_on_top)
     ID_frame_back_button.grid(column=0, row=2, pady=10)
-    ID_frame_next_button = Button(ID_frame, text = "Submit", command = lambda: new_record(student_id_entry.get()) )
+    ID_frame_next_button = Button(ID_frame, text = "Submit", command = lambda: find_patient(student_id_entry.get()) )
     ID_frame_next_button.grid(column=1, row=2, pady=10)
 
 def create_widgets_in_patient_frame(patient):
     # Create the label for the frame
-    patient_ID = patient.stu_id
+    patient_ID = patient['stu_id']
     #patient_ID = "107566575"
-    patient_frame_label = Label(patient_frame, text='Patient ' + str(patient_ID))
+    patient_frame_label = Label(patient_frame, text='Patient ' + str(patient['first_name']) + " " + str(patient['last_name']) )
     patient_frame_label.grid(column=0, row=0, pady=10, padx=10, columnspan = 2)
-
+    print patient
+    for record in patient['records']:
+        print record
     # Create the button for the frame
     patient_frame_back_button = Button(patient_frame, text = "Back", command = call_ID_frame_on_top)
     patient_frame_back_button.grid(column=0, row=1, pady=10)
-    patient_frame_record_button = Button(patient_frame, text = "New Record", command = lambda: new_record(patient_ID))
+    patient_frame_record_button = Button(patient_frame, text = "New Record", command = lambda: create_record(patient))
     patient_frame_record_button.grid(column=1, row=1, pady=10)
     
-def create_widgets_in_new_entry_frame():
+def create_widgets_in_new_entry_frame(patient):
+    first_name = patient['first_name']
+    last_name = patient['last_name']
     # Create the label for the frame
-    new_entry_label = Label(entry_frame, text='Entry Form')
-    new_entry_label.grid(column=0, row=0, pady=10, padx=10)
-
+    new_record_string = "New Record for " + first_name + " " + last_name
+    new_patient_label = Label(entry_frame, text=new_record_string)
+    new_patient_label.grid(column=0, row=0, pady=10, padx=10)
+    
+    date_label = Label(entry_frame, text='Date: ')
+    date_label.grid(column=0, row=1, pady=10, padx=10)
+    date_text = StringVar()
+    date_field = Entry(entry_frame, width=20, textvariable=date_text).grid(column=1,row=1)
+    
+    #add auto fill button for date?
+    
+    sport_label = Label(entry_frame, text='Sport: ')
+    sport_label.grid(column=0, row=2, pady=10, padx=10)
+    sport_text = StringVar()
+    sport_field = Entry(entry_frame, width=20, textvariable=sport_text).grid(column=1,row=2)
+    
+    injury_label = Label(entry_frame, text='Injury: ')
+    injury_label.grid(column=0, row=3, pady=10, padx=10)
+    injury_text = StringVar()
+    injury_field = Entry(entry_frame, width=20, textvariable=injury_text).grid(column=1,row=3)
+    
+    treatment_label = Label(entry_frame, text='Treatment: ')
+    treatment_label.grid(column=0, row=4, pady=10, padx=10)
+    treatment_text = StringVar()
+    treatment_field = Entry(entry_frame, width=20, textvariable=treatment_text).grid(column=1,row=4)
+    
+    followup_label = Label(entry_frame, text='Follow up?: ') # yes/no for making appointments
+    followup_label.grid(column=0, row=5, pady=10, padx=10)
+    followup_text = StringVar()
+    followup_field = Entry(entry_frame, width=20, textvariable=followup_text).grid(column=1,row=5)
+    
     # Create the button for the frame
-    new_entry_back_button = Button(entry_frame, text = "Back", command = call_login_frame_on_top)
-    new_entry_back_button.grid(column=0, row=1, pady=10)
-    new_entry_quit_button = Button(entry_frame, text = "Quit", command = quit_program)
-    new_entry_quit_button.grid(column=1, row=1, pady=10)
+    new_entry_back_button = Button(entry_frame, text = "Back", command = call_ID_frame_on_top)
+    new_entry_back_button.grid(column=0, row=6, pady=10)
+    new_entry_next_button = Button(entry_frame, text = "Create...", command = lambda: store_record(patient, date_text.get(), injury_text.get(), treatment_text.get(), followup_text.get() ) )
+    new_entry_next_button.grid(column=1, row=6, pady=10)
 
 def create_widgets_in_new_patient_frame():
     # Create the label for the frame
@@ -130,7 +162,7 @@ def create_widgets_in_new_patient_frame():
     # Create the button for the frame
     new_patient_back_button = Button(new_patient_frame, text = "Back", command = call_ID_frame_on_top)
     new_patient_back_button.grid(column=0, row=8, pady=10)
-    new_patient_next_button = Button(new_patient_frame, text = "Create...", command = lambda: create_patient(first_name_text.get(),last_name_text.get(),stu_id_text.get(),email_text.get(),student_phone_text.get(),emergency_text.get(),emergency_phone_text.get()))
+    new_patient_next_button = Button(new_patient_frame, text = "Create...", command = lambda: create_patient(first_name_text.get(),last_name_text.get(),stu_id_text.get(),email_text.get(),student_phone_text.get(),emergency_text.get(),emergency_phone_text.get()) )
     new_patient_next_button.grid(column=1, row=8, pady=10)
 
 ####################    Create Frames    ####################
@@ -154,10 +186,11 @@ def call_patient_frame_on_top(patient):
     create_widgets_in_patient_frame(patient)
     patient_frame.grid(column=0, row=0, padx=20, pady=5)
     
-def call_new_entry_frame_on_top():
+def call_new_entry_frame_on_top(patient):
     # This function can only be called from the second window.
     # Hide the second window and show the third window.
     forget_frames(entry_frame)
+    create_widgets_in_new_entry_frame(patient)
     entry_frame.grid(column=0, row=0, padx=20, pady=5)
 
 def call_ID_frame_on_top():
@@ -182,26 +215,37 @@ def forget_frames(in_frame):
         if in_frame is not frame:
             frame.grid_forget()
             
-def new_record(patient_ID):
+def find_patient(patient_ID):
     #creates a new Record for the Patient
     #~ print patient_ID
     try:
         patient = controller.get_patient(patient_ID)
-        record = Record()
+        call_patient_frame_on_top(patient)
     except:
         call_new_patient_frame_on_top()
         
 def create_patient(first_name, last_name, stu_id, email, phone, emergency, emergency_phone):
     patient = Patient(first_name, last_name, stu_id, email, phone, emergency, emergency_phone)
-    controller.new_patient(patient)
-    #create_widgets_in_patient_frame(patient)
-    call_patient_frame_on_top(patient)
+    print patient.patient_info
+    controller.new_patient(patient.patient_info)
         
+    call_patient_frame_on_top(patient.patient_info)
+    
+def create_record(patient):
+    #~ print "New Record for patient " + patient['first_name'] +" " + patient['last_name']
+    call_new_entry_frame_on_top(patient)
+
+def store_record(patient, date_text, injury_text, treatment_text, followup_text):
+    record = Record(date_text, injury_text, treatment_text, treatment_text, followup_text )
+    print record.record_details
+    controller.store_record(patient['stu_id'],record.record_details)
+    
+    call_patient_frame_on_top(patient)
 
 ##################    Main Program    #########################
 
 root_window = Tk()
-root_window.title("Health Clinic Database Form")
+root_window.title("Health Clinic Database")
 
 # Define window size
 window_width = 1000
@@ -242,7 +286,6 @@ new_patient_frame.grid(column=0, row=0, padx=20, pady=5)
 #create_widgets_in_patient_frame()
 create_widgets_in_login_frame()
 create_widgets_in_initial_frame()
-create_widgets_in_new_entry_frame()
 create_widgets_in_ID_frame()
 create_widgets_in_new_patient_frame()
 

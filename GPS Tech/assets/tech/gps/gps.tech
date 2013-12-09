@@ -1,0 +1,6 @@
+{
+  "script" : "gps.lua",
+  "actions" : [ "gps" ],
+
+  "energyUsage" : 5
+}

@@ -1,0 +1,10 @@
+{
+  "itemName" : "gpstech",
+  "rarity" : "Legendary",
+  "inventoryIcon" : "/tech/gps.png",
+  "description" : "Tracks your movement!",
+  "shortdescription" : "GPS",
+  "inspectionKind" : "tech",
+
+  "techModule" : "gps.tech"
+}

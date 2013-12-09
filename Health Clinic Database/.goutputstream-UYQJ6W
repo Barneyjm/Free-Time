@@ -32,17 +32,10 @@ def get_patient(patient_ID):
     
 def store_record(patient_ID, record):
     patient = get_patient(patient_ID)
-    id = patient['_id']
-    print id
-    temp_records = patient['records'].append(record)
-    patient['records'] = temp_records
-    healthDB.update({"_id":id}, patient, safe=True)
-    
-    
+    temp_records = patient['records']
     print patient['records']
-   
-
-    
+    patient['records'].insert(record)
+    print patient['records']
     
     
 

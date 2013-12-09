@@ -17,20 +17,20 @@ class Patient:
         self.email = email
         self.phone = phone
         self.records = []
+        
+        self.create_patient()
     
-    def create_patient():
-        self.patient = [
-                   {
-                    'first_name': self.first_name,
-                    'last_name': self.last_name,
-                    'stu_id': self.stu_id,
-                    'email': self.email,
-                    'phone': self.phone,
-                    'emergency': self.emergency,
-                    'emergency_phone': self.emergency_phone,
-                    'records': []
-                   }
-                  ]
+    def create_patient(self):
+        self.patient_info = dict([('first_name', self.first_name),
+                    ('last_name', self.last_name),
+                    ('stu_id', self.stu_id),
+                    ('email', self.email),
+                    ('phone', self.phone),
+                    ('emergency', self.emergency),
+                    ('emergency_phone', self.emergency_phone),
+                    ('records', [])]
+                   )
+                  
         
     def keys(self):
         return self.patient.keys()
@@ -43,15 +43,13 @@ class Record:
         self.treatment = treatment
         self.follow_up = follow_up
         
-    def create_record():
-            record = [
-                       {
-                        'datetime': self.datetime,
-                        'sport': self.sport,
-                        'stu_id': self.stu_id,
-                        'injury': self.injury,
-                        'treatment': self.treatment,
-                        'follow_up': self.follow_up,
-                       }
-                      ]
-            return record
+        self.create_record()
+        
+    def create_record(self):
+        self.record_details = dict([
+                    ('datetime', self.datetime),
+                    ('sport', self.sport),
+                    ('injury', self.injury),
+                    ('treatment', self.treatment),
+                    ('follow_up', self.follow_up),
+                   ])

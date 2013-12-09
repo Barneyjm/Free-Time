@@ -13,8 +13,8 @@ if __name__ == "__main__":
     print "connected to Wolfram"
     already_converted = set()
     
-    currency_names = ['test', 'typical']
-    currency_symbols = ['test', 'en_AU.utf8', 'en_BW.utf8', 'en_CA.utf8',
+    currency_names = ['dollars', 'euros', 'pounds']
+    currency_symbols = ['$', 'en_AU.utf8', 'en_BW.utf8', 'en_CA.utf8',
     'en_DK.utf8', 'en_GB.utf8', 'en_HK.utf8', 'en_IE.utf8', 'en_IN', 'en_NG',
     'en_PH.utf8', 'en_US.utf8', 'en_ZA.utf8',
     'en_ZW.utf8', 'ja_JP.utf8']
@@ -33,7 +33,7 @@ if __name__ == "__main__":
             try:
                 body = comment.body.lower()
                 #print body
-                if any(word in body for name in currency_names) or comment.id not in already_converted:
+                if any(word in body for name in currency_names) and comment.id not in already_converted:
                     print word
                     words = body.split()
                     #print words.index("test") 
@@ -50,6 +50,7 @@ if __name__ == "__main__":
                     #comment.reply(reply)
                     already_converted.add(comment.id)
                 else:
+                    print "continue"
                     continue
             except:
                 continue
