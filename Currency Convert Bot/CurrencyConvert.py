@@ -6,7 +6,7 @@ import locale
 if __name__ == "__main__":
     user_agent = "CurrencyConvert 1. by /u/cardstocks"
     r = praw.Reddit(user_agent=user_agent)
-    r.login('MoneyExchanger', 'jungfop54')
+    r.login('MoneyExchanger', 'jungfop54') #remove from readable.
     print "logged in to reddit"
     
     client = wolframalpha.Client('8XR347-UXW4WJP9EX')
