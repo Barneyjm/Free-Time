@@ -1,0 +1,1 @@
+{'technical': ['technical', 'foul', 'proficient', 'technological', 'expert'], 'massive': ['monolithic', 'monumental']}
