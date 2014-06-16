@@ -1,145 +1,87 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri May 16 10:56:45 2014
-
-@author: https://github.com/bdimmick/python-trie/blob/master/trie.py
-"""
-
+# James Tauber
+# http://jtauber.com/ 
 
 class Trie:
+    """
+    A Trie is like a dictionary in that it maps keys to values. However,
+    because of the way keys are stored, it allows look up based on the
+    longest prefix that matches.
+    """
 
     def __init__(self):
-        self.path = {}
-        self.value = None
-        self.value_valid = False
+        self.root = [None, {}]
 
-    def __setitem__(self, key, value):
-        head = key[0]
-        if head in self.path:
-            node = self.path[head]
-        else:
-            node = Trie()
-            self.path[head] = node
 
-        if len(key) > 1:
-            remains = key[1:]
-            node.__setitem__(remains, value)
-        else:
-            node.value = value
-            node.value_valid = True
+    def add(self, key, value):
+        """
+        Add the given value for the given key.
+        """
+        
+        curr_node = self.root
+        for ch in key:
+            curr_node = curr_node[1].setdefault(ch, [None, {}])
+        curr_node[0] = value
 
-    def __delitem__(self, key):
-        head = key[0]
-        if head in self.path:
-            node = self.path[head]
-            if len(key) > 1:
-                remains = key[1:]
-                node.__delitem__(remains)
-            else:
-                node.value_valid = False
-                node.value = None
-            if len(node) == 0:
-                del self.path[head]
 
-    def __getitem__(self, key):
-        head = key[0]
-        if head in self.path:
-            node = self.path[head]
-        else:
-            raise KeyError(key)
-        if len(key) > 1:
-            remains = key[1:]
+    def find(self, key):
+        """
+        Return the value for the given key or None if key not found.
+        """
+        
+        curr_node = self.root
+        for ch in key:
             try:
-                return node.__getitem__(remains)
+                curr_node = curr_node[1][ch]
             except KeyError:
-                raise KeyError(key)
-        elif node.value_valid:
-            return node.value
-        else:
-            raise KeyError(key)
+                return None
+        return curr_node[0]
 
-    def __contains__(self, key):
-        try:
-            self.__getitem__(key)
-        except KeyError:
-            return False
-        return True
 
-    def __len__(self):
-        n = 1 if self.value_valid else 0
-        for k in self.path.keys():
-            n = n + len(self.path[k])
-        return n
+    def find_prefix(self, key):
+        """
+        Find as much of the key as one can, by using the longest
+        prefix that has a value. Return (value, remainder) where
+        remainder is the rest of the given string.
+        """
+        
+        curr_node = self.root
+        remainder = key
+        for ch in key:
+            try:
+                curr_node = curr_node[1][ch]
+            except KeyError:
+                return (curr_node[0], remainder)
+            remainder = remainder[1:]
+        return (curr_node[0], remainder)
 
-    def get(self, key, default=None):
-        try:
-            return self.__getitem__(key)
-        except KeyError:
-            return default
 
-    def nodeCount(self):
-        n = 0
-        for k in self.path.keys():
-            n = n + 1 + self.path[k].nodeCount()
-        return n
+    def convert(self, keystring):
+        """
+        convert the given string using successive prefix look-ups.
+        """
+        
+        valuestring = ""
+        key = keystring
+        while key:
+            value, key = self.find_prefix(key)
+            if not value:
+                return (valuestring, key)
+            valuestring += value
+        return (valuestring, key)
+        
+        
+if __name__ == "__main__":    
+    t = Trie()
+    t.add("foo", "A")
+    t.add("fo", "B")
+    t.add("l", "C")
 
-    def keys(self, prefix=[]):
-        return self.__keys__(prefix)
+    assert t.find("fo") == "B"
+    assert t.find("fool") == None
 
-    def __keys__(self, prefix=[], seen=[]):
-        result = []
-        if self.value_valid:
-            isStr = True
-            val = ""
-            for k in seen:
-                if type(k) != str or len(k) > 2:
-                    isStr = False
-                    break
-                else:
-                    val += k
-            if isStr:
-                result.append(val)
-            else:
-                result.append(prefix)
-        if len(prefix) > 0:
-            head = prefix[0]
-            prefix = prefix[1:]
-            if head in self.path:
-                nextpaths = [head]
-            else:
-                nextpaths = []
-        else:
-            nextpaths = self.path.keys()                
-        for k in nextpaths:
-            nextseen = []
-            nextseen.extend(seen)
-            nextseen.append(k)
-            result.extend(self.path[k].__keys__(prefix, nextseen))
-        return result
+    assert t.find_prefix("fo") == ("B", "")
+    assert t.find_prefix("fool") == ("A", "l")
 
-    def __iter__(self):
-        for k in self.keys():
-            yield k
-        raise StopIteration
+    assert t.convert("fo") == ("B", "")
+    assert t.convert("fool") == ("AC", "")
 
-    def __add__(self, other):
-        result = Trie()
-        result += self
-        result += other
-        return result
-
-    def __sub__(self, other):
-        result = Trie()
-        result += self
-        result -= other
-        return result
-
-    def __iadd__(self, other):
-        for k in other:
-            self[k] = other[k]
-        return self
-
-    def __isub__(self, other):
-        for k in other:
-            del self[k]
-        return self
