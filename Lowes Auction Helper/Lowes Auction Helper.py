@@ -143,6 +143,9 @@ def output(toSave):
     Outputs the auctions as a JSON object, writeable as csv, or JSON
     """
     out = json.dumps(toSave)
+    t = time.now()
+    with open('auction'+str(t)+'.xt', 'w') as file:
+        json.dump(toSave, file)
     
     return out
 
