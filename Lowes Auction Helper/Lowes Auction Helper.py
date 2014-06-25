@@ -16,6 +16,7 @@ Created on Tue Jun 24 17:05:37 2014
 @author: James Barney
 """
 
+import json
 import urllib2
 from bs4 import BeautifulSoup
 
@@ -115,6 +116,13 @@ def _search_type():
     pass
 """
 
+def output(toSave):
+    """
+    Outputs the auctions as a JSON object, writeable as csv, or JSON
+    """
+    out = json.dumps(toSave)
+    
+    return out
   
 
 if __name__ == "__main__":
