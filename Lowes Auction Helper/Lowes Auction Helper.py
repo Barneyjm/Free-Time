@@ -198,7 +198,7 @@ class Bidder(object):
         
 if __name__ == "__main__":
     
-    bidder = Bidder('John', 'Smith', 1234567, 'smith@dummy.com', '555-555-1311')
+    bidder = Bidder('John', 'Smith', 1234567, 'smith@dummy.com', '5555551311')
     
     
     while True:
