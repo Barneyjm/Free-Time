@@ -22,17 +22,16 @@ import urllib2
 from bs4 import BeautifulSoup
 
 def auto_update(url):
+    """
+    returns a tuple of with the following: (whole_page, headers, auctions, joined)
+    """
     whole_page = fetch_auctions(url)
 
     headers = get_headers(whole_page)
     auctions = get_auctions(whole_page)
     joined = join_header_auctions(headers, auctions)
-        
-    res = search_by_header('Category', 'Building', joined)
     
-    """
-    get page, get headers, get auctions, join, query
-    """
+    return (whole_page, headers, auctions, joined)
 
 
 def fetch_auctions(url):
@@ -118,6 +117,7 @@ def submit_bid(bidder):
     """
     Submits a bid on behalf of the person using the program on the item of their choice.
     """
+    pass
 
 """
 #advanced search category=None, lot_number=None, item=None, bidder=None, cur_price=None, min_price=None, value=None
@@ -146,14 +146,20 @@ def output(toSave):
 
 class Bidder(object):
     """
-    Creates a Bidder to aid in creating and tracking bids on auctions.
+    Creates a Bidder to aid in finding, creating and tracking bids for auctions.
     """
-    def __init__(self, name, sales_id, email, phone):
-        self.name = name
+    def __init__(self, f_name, l_name sales_id, email, phone):
+        #identifying information
+        self.f_name = f_name
+        self.l_name = l_name
         self.sales_id = sales_id
         self.email = email
         self.phone = phone
         self.bids = []
+        self.url = "https://raw.githubusercontent.com/Barneyjm/Free-Time/master/Lowes%20Auction%20Helper/auction.htm"
+        
+        update_info(self.url)
+        
         
     def add_bid(self, bid):
         """
@@ -161,15 +167,39 @@ class Bidder(object):
         """
         self.bids.append(bid)
         
+        
+    def search_for_auction(self, header, search_term):
+        """
+        Search for a specific term or item in one of the following catagories:
+        'Category', 'Lot Number', 'Item', 'High Bidder', 'High Bid', 'Minimum Bid', 'Total Retail Value'.
+        """
+        joined = self.joined
+        
+        results = search_by_header(header, search_term, joined)
     
+        return results
 
+    def update_info(self):
+        """
+        updates the self stuff with the new auction information
+        (whole_page, headers, auctions, joined)
+        """
+        updated = auto_update(self.url)
+        
+        self.page = updated[0]
+        self.headers = updated[1]
+        self.auctions = updated[2]
+        self.joined = updated[3]
+        
+        return "Updated info: \n" + self.headers + "\n" + len(self.auctions) + " updated auctions"
+        
 if __name__ == "__main__":
     
-    bidder = Bidder('John Smith', 1234567, 'smith@dummy.com', '555-555-1311')
+    bidder = Bidder('John', 'Smith', 1234567, 'smith@dummy.com', '555-555-1311')
     
     
     while True:
-        auto_update("https://raw.githubusercontent.com/Barneyjm/Free-Time/master/Lowes%20Auction%20Helper/auction.htm")
+        bidder.update_info()
         time.sleep(300)
         
         
