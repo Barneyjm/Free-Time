@@ -10,6 +10,9 @@ TODO:
     -- add more sophisticated search
     -- add GUI (probs not)
     
+    auction URL:
+    http://ncfe7srv.lowes.com/auction/auctionItmDtl.htm?lotNum=XX
+    
     
 Created on Tue Jun 24 17:05:37 2014
 
@@ -200,7 +203,7 @@ if __name__ == "__main__":
     
     while True:
         bidder.update_info()
-        time.sleep(300)
+        time.sleep(120)
         
         
     """
