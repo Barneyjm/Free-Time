@@ -17,8 +17,22 @@ Created on Tue Jun 24 17:05:37 2014
 """
 
 import json
+import time
 import urllib2
 from bs4 import BeautifulSoup
+
+def auto_update(url):
+    whole_page = fetch_auctions(url)
+
+    headers = get_headers(whole_page)
+    auctions = get_auctions(whole_page)
+    joined = join_header_auctions(headers, auctions)
+        
+    res = search_by_header('Category', 'Building', joined)
+    
+    """
+    get page, get headers, get auctions, join, query
+    """
 
 
 def fetch_auctions(url):
@@ -32,13 +46,13 @@ def fetch_auctions(url):
     return whole_page
     
 
-def get_headers():
+def get_headers(page):
     """
     Gets the column headers from the auction site.
     """
     h = []
     
-    headers = whole_page.find_all("th")  
+    headers = page.find_all("th")  
     head = BeautifulSoup(str(headers)).get_text()[1:-1] 
     
     for word in head.split(","):
@@ -48,12 +62,12 @@ def get_headers():
           
 
 
-def get_auctions():
+def get_auctions(page):
     """
     Gets the text from the ugly HTML tables on the auction site.
     Returns a list of the auctions (RAW)
     """
-    tables = whole_page.find_all("tr")   #ind #2 for auctions
+    tables = page.find_all("tr")   #ind #2 for auctions
     
     all_auctions = []
     for tr in tables[6:]: #skips past the page header with instructions, etc
@@ -83,7 +97,7 @@ def join_header_auctions(header, aucts):
     return joined
     
     
-def search_by_header(header, search):
+def search_by_header(header, search, joined):
     """
     Inclusive search for any matching string in the given header's values for all found auctions.
     """
@@ -99,6 +113,11 @@ def search_by_header(header, search):
             
     return results
 
+
+def submit_bid(bidder):
+    """
+    Submits a bid on behalf of the person using the program on the item of their choice.
+    """
 
 """
 #advanced search category=None, lot_number=None, item=None, bidder=None, cur_price=None, min_price=None, value=None
@@ -123,9 +142,38 @@ def output(toSave):
     out = json.dumps(toSave)
     
     return out
-  
+
+
+class Bidder(object):
+    """
+    Creates a Bidder to aid in creating and tracking bids on auctions.
+    """
+    def __init__(self, name, sales_id, email, phone):
+        self.name = name
+        self.sales_id = sales_id
+        self.email = email
+        self.phone = phone
+        self.bids = []
+        
+    def add_bid(self, bid):
+        """
+        adds a bid to the users' recorded bids
+        """
+        self.bids.append(bid)
+        
+    
 
 if __name__ == "__main__":
+    
+    bidder = Bidder('John Smith', 1234567, 'smith@dummy.com', '555-555-1311')
+    
+    
+    while True:
+        auto_update("https://raw.githubusercontent.com/Barneyjm/Free-Time/master/Lowes%20Auction%20Helper/auction.htm")
+        time.sleep(300)
+        
+        
+    """
     whole_page = fetch_auctions("file:///C:/Users/James/Documents/GitHub/Free-Time/Lowes%20Auction%20Helper/auction.htm")
     print whole_page.title.string + " Helper by James Barney"         
          
@@ -138,7 +186,10 @@ if __name__ == "__main__":
     k = search_by_header('Chicken', 'Nope')
     
     h = search_by_header('High Bid', '50')
-
-
-
+    """
+    
+    """
+    get page, get headers, get auctions, join, query
+    """
+    
     
