@@ -154,7 +154,7 @@ class Bidder(object):
     """
     Creates a Bidder to aid in finding, creating and tracking bids for auctions.
     """
-    def __init__(self, f_name, l_name sales_id, email, phone):
+    def __init__(self, f_name, l_name, sales_id, email, phone):
         #identifying information
         self.f_name = f_name
         self.l_name = l_name
