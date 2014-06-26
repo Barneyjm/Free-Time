@@ -162,7 +162,8 @@ class Bidder(object):
         self.email = email
         self.phone = phone
         self.bids = []
-        self.url = "http://ncfe7srv.lowes.com/auction/auction.htm"
+        #self.url = "http://ncfe7srv.lowes.com/auction/auction.htm"
+        self.url = "https://raw.githubusercontent.com/Barneyjm/Free-Time/master/Lowes%20Auction%20Helper/auction.htm"
         
         update_info(self.url)
         
