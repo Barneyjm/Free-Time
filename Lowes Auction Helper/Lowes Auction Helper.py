@@ -10,14 +10,31 @@ TODO:
     -- add more sophisticated search
     -- add GUI (probs not)
     
+    auction URL:
+    http://ncfe7srv.lowes.com/auction/auctionItmDtl.htm?lotNum=XX
+    
     
 Created on Tue Jun 24 17:05:37 2014
 
 @author: James Barney
 """
 
+import json
+import time
 import urllib2
 from bs4 import BeautifulSoup
+
+def auto_update(url):
+    """
+    returns a tuple of with the following: (whole_page, headers, auctions, joined)
+    """
+    whole_page = fetch_auctions(url)
+
+    headers = get_headers(whole_page)
+    auctions = get_auctions(whole_page)
+    joined = join_header_auctions(headers, auctions)
+    
+    return (whole_page, headers, auctions, joined)
 
 
 def fetch_auctions(url):
@@ -31,13 +48,13 @@ def fetch_auctions(url):
     return whole_page
     
 
-def get_headers():
+def get_headers(page):
     """
     Gets the column headers from the auction site.
     """
     h = []
     
-    headers = whole_page.find_all("th")  
+    headers = page.find_all("th")  
     head = BeautifulSoup(str(headers)).get_text()[1:-1] 
     
     for word in head.split(","):
@@ -47,12 +64,12 @@ def get_headers():
           
 
 
-def get_auctions():
+def get_auctions(page):
     """
     Gets the text from the ugly HTML tables on the auction site.
     Returns a list of the auctions (RAW)
     """
-    tables = whole_page.find_all("tr")   #ind #2 for auctions
+    tables = page.find_all("tr")   #ind #2 for auctions
     
     all_auctions = []
     for tr in tables[6:]: #skips past the page header with instructions, etc
@@ -82,7 +99,7 @@ def join_header_auctions(header, aucts):
     return joined
     
     
-def search_by_header(header, search):
+def search_by_header(header, search, joined):
     """
     Inclusive search for any matching string in the given header's values for all found auctions.
     """
@@ -98,6 +115,12 @@ def search_by_header(header, search):
             
     return results
 
+
+def submit_bid(bidder):
+    """
+    Submits a bid on behalf of the person using the program on the item of their choice.
+    """
+    pass
 
 """
 #advanced search category=None, lot_number=None, item=None, bidder=None, cur_price=None, min_price=None, value=None
@@ -115,9 +138,79 @@ def _search_type():
     pass
 """
 
-  
+def output(toSave):
+    """
+    Outputs the auctions as a JSON object, writeable as csv, or JSON
+    """
+    out = json.dumps(toSave)
+    t = time.now()
+    with open('auction'+str(t)+'.xt', 'w') as file:
+        json.dump(toSave, file)
+    
+    return out
 
+
+class Bidder(object):
+    """
+    Creates a Bidder to aid in finding, creating and tracking bids for auctions.
+    """
+    def __init__(self, f_name, l_name, sales_id, email, phone):
+        #identifying information
+        self.f_name = f_name
+        self.l_name = l_name
+        self.sales_id = sales_id
+        self.email = email
+        self.phone = phone
+        self.bids = []
+        #self.url = "http://ncfe7srv.lowes.com/auction/auction.htm"
+        self.url = "https://raw.githubusercontent.com/Barneyjm/Free-Time/master/Lowes%20Auction%20Helper/auction.htm"
+        
+        update_info(self.url)
+        
+        
+    def add_bid(self, bid):
+        """
+        adds a bid to the users' recorded bids
+        """
+        self.bids.append(bid)
+        
+        
+    def search_for_auction(self, header, search_term):
+        """
+        Search for a specific term or item in one of the following catagories:
+        'Category', 'Lot Number', 'Item', 'High Bidder', 'High Bid', 'Minimum Bid', 'Total Retail Value'.
+        """
+        joined = self.joined
+        
+        results = search_by_header(header, search_term, joined)
+    
+        return results
+
+    def update_info(self):
+        """
+        updates the self stuff with the new auction information
+        (whole_page, headers, auctions, joined)
+        """
+        updated = auto_update(self.url)
+        
+        self.page = updated[0]
+        self.headers = updated[1]
+        self.auctions = updated[2]
+        self.joined = updated[3]
+        
+        return "Updated info: \n" + self.headers + "\n" + len(self.auctions) + " updated auctions"
+        
 if __name__ == "__main__":
+    
+    bidder = Bidder('John', 'Smith', 1234567, 'smith@dummy.com', '5555551311')
+    
+    
+    while True:
+        bidder.update_info()
+        time.sleep(120)
+        
+        
+    """
     whole_page = fetch_auctions("file:///C:/Users/James/Documents/GitHub/Free-Time/Lowes%20Auction%20Helper/auction.htm")
     print whole_page.title.string + " Helper by James Barney"         
          
@@ -130,7 +223,10 @@ if __name__ == "__main__":
     k = search_by_header('Chicken', 'Nope')
     
     h = search_by_header('High Bid', '50')
-
-
-
+    """
+    
+    """
+    get page, get headers, get auctions, join, query
+    """
+    
     
