@@ -12,7 +12,8 @@ class Elevator(object):
         self.WEIGHT_LIMIT = weight_limit  #kg
         
         self.cable = Cable(cable_type)
-        self.num_passenger = 0
+
+        self.passengers = dict()
 
 
     ############# physics methods ############
@@ -38,10 +39,10 @@ class Elevator(object):
     ############# passenger methods ##########
 
     def get_num_passenger(self):
-        return self.num_passenger
+        return len(self.passengers.keys())
 
-    def set_num_passenger(self, passengers):
-        self.num_passenger = passengers
+    def add_passenger(self, passenger):
+        self.passengers[passenger.ID] = passenger
 
     ############# floor methods ##############
 
@@ -116,23 +117,47 @@ class Building(object):
 
 
 class Person(object):
-    def __init__(self, height, mass):
-        self.height = height    #m
+    def __init__(self, ID, happiness, mass, cur_floor, dest_floor):
+        self.ID = ID
+        self.happiness = happiness
         self.mass = mass        #kg
-        self.vol = self.height / self.mass #not really volume...
+        self.cur_floor = cur_floor
+        self.dest_floor = dest_floor
+        
 
+        self.wait_time = 0
+        self.ride_time = 0
+
+
+        ##implement later
+        self.height = height    #m
+        self.vol = self.height / self.mass #not really volume...
+        
+    ############## happiness ##########
+    def get_happiness(self):
+        return self.happiness
+
+    def set_happiness(self, happiness):
+        self.happiness = happiness
+
+    def calc_happiness(self):
+        self.happiness = self.happiness - (self.wait_time + self.ride_time)
+    
+    ############# physics ##############
+    def get_mass(self):
+        return self.mass
+
+    def set_mass(self, mass):
+        self.mass = mass
+
+
+        ##implement later
 
     def get_height(self):
         return self.height
 
     def set_height(self, height):
         self.height = height
-
-    def get_mass(self):
-        return self.mass
-
-    def set_mass(self, mass):
-        self.mass = mass
 
     def get_vol(self):
         return self.vol
