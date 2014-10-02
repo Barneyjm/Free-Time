@@ -1,5 +1,5 @@
 #types of elevators, cables, buildings
-
+import objects
 
 ######### elevators ##########
 # self, cur_floor, cur_weight, cur_speed, cur_accl,
@@ -14,9 +14,9 @@ E_advanced = Elevator(0, 1000, 0, 0, 10000, 40, "dunno")
 ######### cables #############
 #(self, safety_rating, max_tension, mass_per_len)
 
-C_basic = Cable(3, )
-C_medium = Cable()
-C_advanced = Cable()
+C_basic = Cable(3, 30000, 100)
+C_medium = Cable(4, 50000, 125)
+C_advanced = Cable(5, 100000, 150)
 
 ######### buildings ##########
 #(self, num_floors, floor_cap, num_elevators)
