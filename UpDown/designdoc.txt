@@ -1,0 +1,32 @@
+
+Simplest Mode:
+  One elevator, one person, going up and down. No issues/challenges. Simple Transportation
+    Entails:
+      Moving a person from floor to floor efficiently
+      Reward based on [ efficiency = length of time spent waiting / length of time spent on elevator ]
+                      [ happiness = wait time - travel time ] 
+
+Functionality:
+  Objects:
+    elevators: 
+    
+    cables:
+    
+    buildings:
+    
+    persons:
+      happiness level
+      VIPs
+    
+  Physics:
+    implement cables, period.
+    Tension Calculation (no cables, no problem babe!)
+    Weight change based on acceleration
+    
+    
+  Events:
+    
+
+
+Graphics: ALL OF IT
+
