@@ -3,8 +3,9 @@ Simplest Mode:
   One elevator, one person, going up and down. No issues/challenges. Simple Transportation
     Entails:
       Moving a person from floor to floor efficiently
-      Reward based on [ efficiency = length of time spent waiting / length of time spent on elevator ]
-                      [ happiness = wait time - travel time ] 
+      Reward based on:
+                      minimize( [ efficiency = length of time spent waiting / length of time spent on elevator ] )
+                      minimize( [ happiness = wait time - travel time ] )
 
 Functionality:
   Objects:
