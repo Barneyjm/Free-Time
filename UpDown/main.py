@@ -1,4 +1,3 @@
-import objects
 import types
 import elevatorTitle
 
@@ -15,7 +14,8 @@ class UpDown(object):
         print "you're playing on difficulty: " + str(self.difficulty)
 
         
-        
+        elevator = types.E_basic
+        print elevator
 
 
 
