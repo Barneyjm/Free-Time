@@ -1,4 +1,4 @@
-
+import math
 
 class Elevator(object):
     def __init__(self, cur_floor, cur_weight, cur_speed, cur_accl,
@@ -11,7 +11,7 @@ class Elevator(object):
         self.SPEED_LIMIT = speed_limit    #m/s
         self.WEIGHT_LIMIT = weight_limit  #kg
         
-        self.cable = Cable(cable_type)
+        #self.cable = Cable(cable_type)
 
         self.passengers = dict()
 
@@ -43,6 +43,9 @@ class Elevator(object):
 
     def add_passenger(self, passenger):
         self.passengers[passenger.ID] = passenger
+
+    def rm_passenger(self, passenger):
+        del self.passengers[passenger.ID]
 
     ############# floor methods ##############
 
@@ -105,19 +108,23 @@ class Cable(object):
 
 
 class Building(object):
-    def __init__(self, num_floors, floor_cap, num_elevators):
+    def __init__(self, num_floors, floor_capacity, num_elevators):
         self.num_floors = num_floors
         self.num_elevators = num_elevators
 
         self.floors = range(self.num_floors)
+        self.waiting = dict().fromkeys(self.floors)
         
         self.floor_capacity = floor_capacity
 
         self.MAX_CAPACITY = self.num_floors*self.floor_capacity
 
+        
+
 
 class Person(object):
     def __init__(self, ID, happiness, mass, cur_floor, dest_floor):
+        #remove numbers except floors and auto generate them
         self.ID = ID
         self.happiness = happiness
         self.mass = mass        #kg
@@ -130,8 +137,8 @@ class Person(object):
 
 
         ##implement later
-        self.height = height    #m
-        self.vol = self.height / self.mass #not really volume...
+        #self.height = height    #m
+        #self.vol = self.height / self.mass #not really volume...
         
     ############## happiness ##########
     def get_happiness(self):
@@ -150,9 +157,13 @@ class Person(object):
     def set_mass(self, mass):
         self.mass = mass
 
+    def generate(self):
+        """generatea a new person for the game"""
+        return None
+
 
         ##implement later
-
+"""
     def get_height(self):
         return self.height
 
@@ -164,10 +175,14 @@ class Person(object):
 
     def recalc_vol(self, vol):
         self.vol = self.height / self.mass
-
+"""
         
 
 
     
+if __name__ == "__main__":
+    elevator = Elevator(0,0,0,0,0,0,"none")
+    building = Building(10,100, 1)
 
+    print building.waiting.keys()
     
