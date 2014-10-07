@@ -1,4 +1,6 @@
-import math
+import binascii
+import os
+import random
 
 class Elevator(object):
     def __init__(self, cur_floor, cur_weight, cur_speed, cur_accl,
@@ -114,20 +116,34 @@ class Building(object):
 
         self.floors = range(self.num_floors)
         self.waiting = dict().fromkeys(self.floors)
+
+        for floor in self.waiting:
+            self.waiting[floor] = dict()
+
+        print len(self.waiting.keys())
         
         self.floor_capacity = floor_capacity
 
         self.MAX_CAPACITY = self.num_floors*self.floor_capacity
 
+    def get_num_waiting(self, floor):
+        return len(self.waiting[floor].keys())
+
+    def add_waiting(self, floor, passenger):
+        self.waiting[floor][passenger.ID] = passenger
+
+    def rm_waiting(self, floor, passenger):
+        del self.waiting[floor][passenger.ID]
+
         
 
 
 class Person(object):
-    def __init__(self, ID, happiness, mass, cur_floor, dest_floor):
+    def __init__(self, cur_floor, dest_floor):
         #remove numbers except floors and auto generate them
-        self.ID = ID
-        self.happiness = happiness
-        self.mass = mass        #kg
+        self.ID = self.generate_ID()
+        self.happiness = self.generate_happiness()
+        self.mass = self.generate_mass()        #kg
         self.cur_floor = cur_floor
         self.dest_floor = dest_floor
         
@@ -139,6 +155,17 @@ class Person(object):
         ##implement later
         #self.height = height    #m
         #self.vol = self.height / self.mass #not really volume...
+
+    ############## unique numbers ######
+
+    def generate_ID(self):
+        return binascii.hexlify(os.urandom(32))
+
+    def generate_happiness(self):
+        return random.randint(75, 125)
+
+    def generate_mass(self):
+        return random.randint(75, 125)
         
     ############## happiness ##########
     def get_happiness(self):
@@ -156,10 +183,6 @@ class Person(object):
 
     def set_mass(self, mass):
         self.mass = mass
-
-    def generate(self):
-        """generatea a new person for the game"""
-        return None
 
 
         ##implement later
@@ -185,4 +208,20 @@ if __name__ == "__main__":
     building = Building(10,100, 1)
 
     print building.waiting.keys()
+    print building.waiting[0]
+
+    person = Person(0,9)
+    building.waiting[0] = {person.ID: person}
+    print "currently waiting"
+    print building.waiting[0]
+    print building.waiting[0][person.ID].cur_floor
+    print building.waiting[0][person.ID].dest_floor
+    elevator.add_passenger(person)
+    print "elevator"
+    print elevator.passengers
+    building.rm_waiting(0, person)
+    print "building"
+    print building.waiting[0]
+    print "elevator"
+    print elevator.passengers
     
