@@ -35,9 +35,9 @@ class Models(object):
     ######### persons ##########
     #(self, ID, happiness, mass, cur_floor, dest_floor
 
-    P_small = Person(1, 100, 100, 0, 7)
-    P_medium = Person(2, 100, 100, 0, 3)
-    P_large = Person(3, 100, 100, 0, 4)
+    P_small = Person(0, 7)
+    P_medium = Person(0, 3)
+    P_large = Person(0, 4)
 
 
 if __name__ == "__main__":
