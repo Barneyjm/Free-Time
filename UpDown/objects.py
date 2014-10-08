@@ -3,15 +3,15 @@ import os
 import random
 
 class Elevator(object):
-    def __init__(self, cur_floor, cur_weight, cur_speed, cur_accl,
-                 weight_limit, speed_limit, cable_type):
+    def __init__(self, cur_floor, cur_mass, cur_speed, cur_accl,
+                 mass_limit, speed_limit, cable_type):
         self.cur_floor = cur_floor
-        self.cur_weight = cur_weight   #kg
+        self.cur_mass = cur_mass   #kg
         self.cur_speed = cur_speed     #m/s
         self.cur_accl = cur_accl       #m/s^2
 
         self.SPEED_LIMIT = speed_limit    #m/s
-        self.WEIGHT_LIMIT = weight_limit  #kg
+        self.MASS_LIMIT = mass_limit  #kg
         
         #self.cable = Cable(cable_type)
 
@@ -20,14 +20,14 @@ class Elevator(object):
 
     ############# physics methods ############
 
-    def get_weight(self):
-        return self.cur_weight
+    def get_mass(self):
+        return self.cur_mass
 
-    def set_weight(self, weight):
-        self.cur_weight = weight
+    def set_mass(self, mass):
+        self.cur_mass = mass
 
     def is_overweight(self):
-        return self.cur_weight > self.WEIGHT_LIMIT
+        return self.cur_mass > self.MASS_LIMIT
 
     def get_speed(self):
         return self.cur_speed
@@ -120,7 +120,7 @@ class Building(object):
         for floor in self.waiting:
             self.waiting[floor] = dict()
 
-        print len(self.waiting.keys())
+        #print len(self.waiting.keys())
         
         self.floor_capacity = floor_capacity
 
@@ -134,38 +134,41 @@ class Building(object):
 
     def rm_waiting(self, floor, passenger):
         del self.waiting[floor][passenger.ID]
-
         
 
 
 class Person(object):
-    def __init__(self, cur_floor, dest_floor):
+    def __init__(self, cur_floor, dest_floor, born):
         #remove numbers except floors and auto generate them
         self.ID = self.generate_ID()
         self.happiness = self.generate_happiness()
         self.mass = self.generate_mass()        #kg
+        self.born = born
+        self.death = -1
+        
         self.cur_floor = cur_floor
         self.dest_floor = dest_floor
         
-
         self.wait_time = 0
         self.ride_time = 0
-
 
         ##implement later
         #self.height = height    #m
         #self.vol = self.height / self.mass #not really volume...
 
+    def __repr__(self):
+        return self.ID[0:4] + " is going to floor " + str(self.dest_floor) + " and has a happiness of " + str(self.happiness) + "."
+    
     ############## unique numbers ######
 
     def generate_ID(self):
-        return binascii.hexlify(os.urandom(32))
+        return binascii.hexlify(os.urandom(4))
 
     def generate_happiness(self):
-        return random.randint(75, 125)
+        return random.randint(25, 125)
 
     def generate_mass(self):
-        return random.randint(75, 125)
+        return random.randint(50, 125)
         
     ############## happiness ##########
     def get_happiness(self):
@@ -210,7 +213,8 @@ if __name__ == "__main__":
     print building.waiting.keys()
     print building.waiting[0]
 
-    person = Person(0,9)
+    person = Person(0,9, 0)
+    print person
     building.waiting[0] = {person.ID: person}
     print "currently waiting"
     print building.waiting[0]
